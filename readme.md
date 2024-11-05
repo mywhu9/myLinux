@@ -1,8 +1,9 @@
 # Linux实验
 ### 实验内容:  
-[1. MBR中磁盘分区表解析(实验一)](#1mbr中磁盘分区表解析)  
-[2.当前进程页表目录获取(实验二)](#2当前进程页表目录获取)  
-[3.全局描述符表获取(实验三)](#3全局描述符表获取)
+[1. MBR中磁盘分区表解析(实验1)](#1mbr中磁盘分区表解析)  
+[2.当前进程页表目录获取(实验2)](#2当前进程页表目录获取)  
+[3.全局描述符表获取(实验3)](#3全局描述符表获取)  
+[4.访问所有任务（进程）(实验6)](#4访问所有任务进程)
 
 ### 项目说明:  
 每个实验均保存在对应序号的文件夹,使用git获取:  
@@ -48,7 +49,12 @@ gcc MBR.c -o MBR
 ```bash
 sudo ./MBR
 ```
-### 源代码
+
+---
+---
+<details>
+<summary><em>MBR.c</em></summary>
+
 ```c
 #include <stdio.h>
 #include <stdlib.h>
@@ -117,13 +123,25 @@ int main() {
 }
 
 ```
+
+</details>
+
+---
+---
+
 ### 实验结果
 ![实验1](./results/1.png)  
 
 [回到顶部](#linux实验)  
 
 ## 2.当前进程页表目录获取
-### 源代码
+
+
+---
+---
+<details>
+<summary><em>PDE.c</em></summary>
+
 ```c
 #include <linux/module.h>      // 引入模块相关的头文件
 #include <linux/kernel.h>      // 引入内核相关的头文件
@@ -228,6 +246,12 @@ MODULE_DESCRIPTION("打印当前进程页表目录信息 - OpenEuler版本");
 MODULE_VERSION("1.0");
 
 ```
+
+</details>
+
+---
+---
+
 Makefile文件见项目文件夹"2"
 ### 使用方法
 首先安装正确的内核头文件  
@@ -251,10 +275,116 @@ lsmod | grep PDE
 ![实验2_1](./results/2_1.png)
 查看输出  
 ```bash
-dmesg | tail
+dmesg | tail -n 100
 ```
-结果为  
-![实验2_2](./results/2_2.png)
+---
+---
+<details>
+<summary><em>实验结果</em></summary>
+
+[root@ecs-ff36 2]# dmesg | tail -n 100<br>
+[525729.156628] 当前进程页表目录信息:<br>
+[525729.157721] CR3寄存器值: 0x7d368006<br>
+[525729.158747] 页目录基地址: ffff9c10bd368000<br>
+[525729.159821] 当前进程: insmod (PID: 40014)<br>
+[525729.160667] <br>
+                页目录项 172:<br>
+[525729.161961] 地址: 000000007bcdd000<br>
+[525729.162679] 标志位: <br>
+[525729.162679] Present <br>
+[525729.163253] R/W <br>
+[525729.163804] User <br>
+[525729.164321] Accessed <br>
+[525729.164836] Dirty <br>
+<br>
+[525729.166410] <br>
+                页目录项 255:<br>
+[525729.167491] 地址: 000000007b5cd000<br>
+[525729.168185] 标志位: <br>
+[525729.168186] Present <br>
+[525729.168774] R/W <br>
+[525729.169313] User <br>
+[525729.169818] Accessed <br>
+[525729.170323] Dirty <br>
+<br>
+[525729.171862] <br>
+                页目录项 312:<br>
+[525729.172945] 地址: 0000000012001000<br>
+[525729.173657] 标志位: <br>
+[525729.173657] Present <br>
+[525729.174240] R/W <br>
+[525729.174794] User <br>
+[525729.175292] Accessed <br>
+[525729.175806] Dirty <br>
+<br>
+[525729.177358] <br>
+                页目录项 373:<br>
+[525729.178439] 地址: 000000000fd31000<br>
+[525729.179121] 标志位: <br>
+[525729.179122] Present <br>
+[525729.179718] R/W <br>
+[525729.180293] User <br>
+[525729.180819] Accessed <br>
+[525729.181350] Dirty <br>
+<br>
+[525729.182889] <br>
+                页目录项 437:<br>
+[525729.183965] 地址: 0000000036a0f000<br>
+[525729.184648] 标志位: <br>
+[525729.184648] Present <br>
+[525729.185213] R/W <br>
+[525729.185718] User <br>
+[525729.186223] Accessed <br>
+[525729.186685] Dirty <br>
+<br>
+[525729.188136] <br>
+                页目录项 438:<br>
+[525729.189079] 地址: 000000007df4f000<br>
+[525729.189718] 标志位: <br>
+[525729.189719] Present <br>
+[525729.190267] R/W <br>
+[525729.190740] User <br>
+[525729.191275] Accessed <br>
+[525729.191736] Dirty <br>
+<br>
+[525729.193173] <br>
+                页目录项 508:<br>
+[525729.194125] 地址: 000000007ff4e000<br>
+[525729.194732] 标志位: <br>
+[525729.194732] Present <br>
+[525729.195274] R/W <br>
+[525729.195752] User <br>
+[525729.196230] Accessed <br>
+[525729.196674] Dirty <br>
+<br>
+[525729.198099] <br>
+                页目录项 510:<br>
+[525729.199045] 地址: 0000000011a25000<br>
+[525729.199667] 标志位: <br>
+[525729.199667] Present <br>
+[525729.200180] R/W <br>
+[525729.200649] User <br>
+[525729.201117] Accessed <br>
+[525729.201561] Dirty <br>
+<br>
+[525729.202906] <br>
+                页目录项 511:<br>
+[525729.203824] 地址: 000000001120d000<br>
+[525729.204449] 标志位: <br>
+[525729.204449] Present <br>
+[525729.204955] R/W <br>
+[525729.205449] User <br>
+[525729.205883] Accessed <br>
+[525729.206339] Dirty <br>
+<br>
+[root@ecs-ff36 2]# <br>
+
+
+</details>
+
+---
+---
+
 实验完成后，通过下列命令卸载模块
 ```bash
 sudo rmmod PDE
@@ -264,7 +394,12 @@ sudo rmmod PDE
 
 ## 3.全局描述符表获取
 
-### 源代码
+
+---
+---
+<details>
+<summary><em>GDT.c</em></summary>
+
 ```c
 #include <stdio.h>       // 引入标准输入输出库
 #include <stdint.h>      // 引入整数类型定义库
@@ -339,6 +474,11 @@ int main() {
 }
 
 ```
+
+</details>
+
+---
+---
 ### 使用说明
 与实验一相同，编译后运行即可
 ```bash
@@ -351,3 +491,172 @@ gcc GDT.c -o GDT
 !["实验三"](./results/3.png)
 
 [回到顶部](#linux实验)  
+
+## 4.访问所有任务（进程）
+
+
+---
+---
+<details>
+<summary><em>process_list.c</em></summary>
+
+```c
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/init.h>
+#include <linux/sched.h>
+#include <linux/sched/signal.h>
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Your Name");
+MODULE_DESCRIPTION("打印所有进程名称");
+
+static int __init print_processes_init(void)
+{
+    struct task_struct *task;
+    
+    // 打印当前进程的名称
+    printk(KERN_INFO "当前进程名称: %s\n", current->comm);
+
+    // 遍历系统中所有进程
+    for_each_process(task) {
+        printk(KERN_INFO "进程名称: %s\n", task->comm);
+    }
+
+    return 0;
+}
+
+static void __exit print_processes_exit(void)
+{
+    printk(KERN_INFO "模块已卸载\n");
+}
+
+module_init(print_processes_init);
+module_exit(print_processes_exit);
+```
+
+</details>
+
+---
+---
+
+### 使用说明
+4文件夹下有process_list.c和Makefile文件
+首先编译并加载模块
+```bash
+make
+```
+```bash
+sudo insmod process_list.ko
+```
+加载完成后，可以使用以下命令检查模块是否已成功加载
+```bash
+dmesg | tail -n 100
+```
+---
+---
+
+<details>
+<summary><em>实验结果</em></summary>
+
+[root@ecs-ff36 4]# dmesg | tail -n 100<br>
+[524877.213624] 模块已卸载<br>
+[524881.404792] 当前进程名称: insmod<br>
+[524881.405572] 进程名称: systemd<br>
+[524881.406171] 进程名称: kthreadd<br>
+[524881.406754] 进程名称: rcu_gp<br>
+[524881.407322] 进程名称: rcu_par_gp<br>
+[524881.407926] 进程名称: kworker/0:0H<br>
+[524881.408547] 进程名称: mm_percpu_wq<br>
+[524881.409166] 进程名称: ksoftirqd/0<br>
+[524881.409769] 进程名称: rcu_sched<br>
+[524881.410360] 进程名称: rcu_bh<br>
+[524881.410917] 进程名称: migration/0<br>
+[524881.411530] 进程名称: cpuhp/0<br>
+[524881.412109] 进程名称: kdevtmpfs<br>
+[524881.412699] 进程名称: netns<br>
+[524881.413258] 进程名称: kauditd<br>
+[524881.413820] 进程名称: khungtaskd<br>
+[524881.414412] 进程名称: oom_reaper<br>
+[524881.415003] 进程名称: writeback<br>
+[524881.415576] 进程名称: kcompactd0<br>
+[524881.416168] 进程名称: ksmd<br>
+[524881.416707] 进程名称: khugepaged<br>
+[524881.417298] 进程名称: crypto<br>
+[524881.417865] 进程名称: kintegrityd<br>
+[524881.418468] 进程名称: kblockd<br>
+[524881.419039] 进程名称: md<br>
+[524881.419557] 进程名称: edac-poller<br>
+[524881.420155] 进程名称: watchdogd<br>
+[524881.420729] 进程名称: kswapd0<br>
+[524881.421298] 进程名称: kthrotld<br>
+[524881.421866] 进程名称: acpi_thermal_pm<br>
+[524881.422499] 进程名称: kmpath_rdacd<br>
+[524881.423124] 进程名称: kaluad<br>
+[524881.423692] 进程名称: ipv6_addrconf<br>
+[524881.424336] 进程名称: kstrp<br>
+[524881.424892] 进程名称: ata_sff<br>
+[524881.425469] 进程名称: kworker/0:1H<br>
+[524881.426093] 进程名称: scsi_eh_0<br>
+[524881.426681] 进程名称: scsi_tmf_0<br>
+[524881.427291] 进程名称: scsi_eh_1<br>
+[524881.427893] 进程名称: scsi_tmf_1<br>
+[524881.428519] 进程名称: jbd2/vda1-8<br>
+[524881.429137] 进程名称: ext4-rsv-conver<br>
+[524881.429799] 进程名称: systemd-journal<br>
+[524881.430473] 进程名称: systemd-udevd<br>
+[524881.431112] 进程名称: auditd<br>
+[524881.431681] 进程名称: dbus-daemon<br>
+[524881.432305] 进程名称: NetworkManager<br>
+[524881.432964] 进程名称: chronyd<br>
+[524881.433569] 进程名称: polkitd<br>
+[524881.434153] 进程名称: rngd<br>
+[524881.434717] 进程名称: rsyslogd<br>
+[524881.435304] 进程名称: systemd-network<br>
+[524881.435960] 进程名称: systemd-logind<br>
+[524881.436653] 进程名称: tuned<br>
+[524881.437252] 进程名称: dhclient<br>
+[524881.437859] 进程名称: ttm_swap<br>
+[524881.438458] 进程名称: nfit<br>
+[524881.439146] 进程名称: wrapper<br>
+[524881.440052] 进程名称: java<br>
+[524881.440877] 进程名称: crond<br>
+[524881.441684] 进程名称: agetty<br>
+[524881.442347] 进程名称: agetty<br>
+[524881.442925] 进程名称: sshd<br>
+[524881.443470] 进程名称: kworker/u2:0<br>
+[524881.444092] 进程名称: kworker/0:1<br>
+[524881.444695] 进程名称: sshd<br>
+[524881.445244] 进程名称: systemd<br>
+[524881.445815] 进程名称: (sd-pam)<br>
+[524881.446383] 进程名称: sshd<br>
+[524881.446942] 进程名称: bash<br>
+[524881.447548] 进程名称: kworker/0:2<br>
+[524881.448183] 进程名称: kworker/u2:1<br>
+[524881.448815] 进程名称: sshd<br>
+[524881.449352] 进程名称: sshd<br>
+[524881.449905] 进程名称: sudo<br>
+[524881.450449] 进程名称: insmod<br>
+
+</details>
+
+---
+---
+
+试验结束后可卸载模块
+```bash
+sudo rmmod process_list
+```
+
+[回到顶部](#linux实验)  
+
+---
+---
+<details>
+<summary><em>实验结果</em></summary>
+
+</details>
+
+---
+---
+
