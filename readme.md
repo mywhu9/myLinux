@@ -51,7 +51,7 @@ sudo ./MBR
 ```
 
 ---
----
+
 <details>
 <summary><em>MBR.c</em></summary>
 
@@ -126,7 +126,7 @@ int main() {
 
 </details>
 
----
+
 ---
 
 ### 实验结果
@@ -138,7 +138,7 @@ int main() {
 
 
 ---
----
+
 <details>
 <summary><em>PDE.c</em></summary>
 
@@ -250,7 +250,6 @@ MODULE_VERSION("1.0");
 </details>
 
 ---
----
 
 Makefile文件见项目文件夹"2"
 ### 使用方法
@@ -278,7 +277,7 @@ lsmod | grep PDE
 dmesg | tail -n 100
 ```
 ---
----
+
 <details>
 <summary><em>实验结果</em></summary>
 
@@ -383,7 +382,7 @@ dmesg | tail -n 100
 </details>
 
 ---
----
+
 
 实验完成后，通过下列命令卸载模块
 ```bash
@@ -396,7 +395,7 @@ sudo rmmod PDE
 
 
 ---
----
+
 <details>
 <summary><em>GDT.c</em></summary>
 
@@ -478,7 +477,7 @@ int main() {
 </details>
 
 ---
----
+
 ### 使用说明
 与实验一相同，编译后运行即可
 ```bash
@@ -496,7 +495,7 @@ gcc GDT.c -o GDT
 
 
 ---
----
+
 <details>
 <summary><em>process_list.c</em></summary>
 
@@ -538,7 +537,7 @@ module_exit(print_processes_exit);
 </details>
 
 ---
----
+
 
 ### 使用说明
 4文件夹下有process_list.c和Makefile文件
@@ -553,7 +552,7 @@ sudo insmod process_list.ko
 ```bash
 dmesg | tail -n 100
 ```
----
+
 ---
 
 <details>
@@ -641,7 +640,7 @@ dmesg | tail -n 100
 </details>
 
 ---
----
+
 
 试验结束后可卸载模块
 ```bash
@@ -650,13 +649,12 @@ sudo rmmod process_list
 
 [回到顶部](#linux实验)  
 
----
+
 ---
 <details>
 <summary><em>实验结果</em></summary>
 
 </details>
 
----
 ---
 
