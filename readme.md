@@ -1,15 +1,12 @@
-
-<center>
+<div style="text-align: center;">
 
 # Linux实验
 
-</center>
+</div>
 
-<center>
 
-![whu](./results/whu.png)
+<div align=center><img src="./results/whu.png"></div>
 
-</center>
 
 ### 实验内容:  
 [1. MBR中磁盘分区表解析(实验1)](#1mbr中磁盘分区表解析)  
