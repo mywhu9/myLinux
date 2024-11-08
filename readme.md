@@ -1,19 +1,21 @@
-<div style="text-align: center;">
-
-# Linux实验
-
+<div align="center">
+  <h1 style="border-bottom:none;">WHU-Linux实验</h1>
+  <p>
+    2022302111240 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;黄河
+  </p>
 </div>
 
 
 <div align=center><img src="./results/whu.png"></div>
 
+<h3 id="catalog">实验内容</h2>
 
-### 实验内容:  
 [1. MBR中磁盘分区表解析(实验1)](#1mbr中磁盘分区表解析)  
 [2.当前进程页表目录获取(实验2)](#2当前进程页表目录获取)  
 [3.全局描述符表获取(实验3)](#3全局描述符表获取)  
 [4.访问所有任务（进程）(实验6)](#4访问所有任务进程)  
-[5.文件系统磁盘布局解析(实验9)](#5文件系统磁盘布局解析)
+[5.文件系统磁盘布局解析(实验9)](#5文件系统磁盘布局解析)  
+[6.ELF文件结构解析(实验10)](#6elf文件结构解析)
 
 ### 项目说明:  
 每个实验均保存在对应序号的文件夹,使用git获取:  
@@ -142,7 +144,7 @@ int main() {
 ### 实验结果
 ![实验1](./results/1.png)  
 
-[回到顶部](#linux实验)  
+[回到目录](#catalog)  
 
 ## 2.当前进程页表目录获取
 
@@ -395,7 +397,7 @@ dmesg | tail -n 100
 sudo rmmod PDE
 ```
   
-[回到顶部](#linux实验)  
+[回到目录](#catalog)   
 
 ## 3.全局描述符表获取
 
@@ -495,7 +497,7 @@ gcc GDT.c -o GDT
 得到的结果为
 !["实验三"](./results/3.png)
 
-[回到顶部](#linux实验)  
+[回到目录](#catalog)  
 
 ## 4.访问所有任务（进程）
 
@@ -653,7 +655,7 @@ dmesg | tail -n 100
 sudo rmmod process_list
 ```
 
-[回到顶部](#linux实验)  
+[回到目录](#catalog)  
 
 ## 5.文件系统磁盘布局解析
 首先安装必要的开发包
@@ -964,23 +966,101 @@ df -h
 ---
 
 
-[回到顶部](#linux实验) 
+[回到目录](#catalog)  
 
-
-
-
-
-
-
-
+## 6.ELF文件结构解析  
 
 ---
 
-
 <details>
-<summary><em>实验结果</em></summary>
+<summary><em>elf-reader.c</em></summary>
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <elf.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        printf("Usage: %s <elf_file>\n", argv[0]);
+        return 1;
+    }
+
+    int fd = open(argv[1], O_RDONLY);
+    if (fd == -1) {
+        perror("open");
+        return 1;
+    }
+
+    // 读取ELF文件头
+    Elf64_Ehdr ehdr;
+    if (read(fd, &ehdr, sizeof(Elf64_Ehdr)) != sizeof(Elf64_Ehdr)) {
+        perror("read");
+        close(fd);
+        return 1;
+    }
+
+    // 打印ELF文件头信息
+    printf("ELF Header:\n");
+    printf("  Magic:   %02x %02x %02x %02x\n",
+           ehdr.e_ident[EI_MAG0], ehdr.e_ident[EI_MAG1],
+           ehdr.e_ident[EI_MAG2], ehdr.e_ident[EI_MAG3]);
+    printf("  Class:                             %d-bit\n", ehdr.e_ident[EI_CLASS] == ELFCLASS64 ? 64 : 32);
+    printf("  Data:                              %s\n", ehdr.e_ident[EI_DATA] == ELFDATA2LSB ? "2's complement, little endian" : "2's complement, big endian");
+    printf("  Version:                           %d\n", ehdr.e_ident[EI_VERSION]);
+    printf("  OS/ABI:                            %d\n", ehdr.e_ident[EI_OSABI]);
+    printf("  ABI Version:                       %d\n", ehdr.e_ident[EI_ABIVERSION]);
+    printf("  Type:                              %d\n", ehdr.e_type);
+    printf("  Machine:                           %d\n", ehdr.e_machine);
+    printf("  Version:                           %d\n", ehdr.e_version);
+    printf("  Entry point address:               0x%lx\n", ehdr.e_entry);
+    printf("  Start of program headers:          %lu (bytes into file)\n", ehdr.e_phoff);
+    printf("  Start of section headers:          %lu (bytes into file)\n", ehdr.e_shoff);
+    printf("  Flags:                             0x%x\n", ehdr.e_flags);
+    printf("  Size of this header:               %lu (bytes)\n", ehdr.e_ehsize);
+    printf("  Size of program headers:           %lu (bytes)\n", ehdr.e_phentsize);
+    printf("  Number of program headers:         %u\n", ehdr.e_phnum);
+    printf("  Size of section headers:           %lu (bytes)\n", ehdr.e_shentsize);
+    printf("  Number of section headers:         %u\n", ehdr.e_shnum);
+    printf("  Section header string table index: %u\n", ehdr.e_shstrndx);
+
+    close(fd);
+    return 0;
+}
+
+```
 
 </details>
 
 ---
+
+### 使用说明
+首先编译
+```bash
+gcc -o elf-reader elf-reader.c
+```
+使用得到的elf-reader即可查看ELF文件的结构信息
+判断一个文件类型，可使用file指令，例如，查看实验1编译得到的的MBR文件
+```bash
+file MBR
+```
+得到的结果为  
+MBR: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=8e7ed28defb44e7e406da69339e217ef51c04868, for GNU/Linux 3.2.0, not stripped  
+
+查看MBR结构信息
+```bash
+./elf-reader ../1/MBR
+```
+得到的结果为
+![实验6](./results/6.png)
+
+[回到目录](#catalog)  
+
+
+
+
 
